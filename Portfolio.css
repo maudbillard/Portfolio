@@ -1,0 +1,1184 @@
+@font-face {
+    font-family: "Boldonse";
+    src: url("Boldonse-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "DIN Alternate";
+    src: url("DIN-Alternate-Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+}
+
+
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BODY */
+body {
+transition: background-color 0.1s linear;
+  overflow-x: hidden;
+  cursor: none;
+  position: relative; /* IMPORTANT: stabilise les layers */
+}
+
+/* SCROLL */
+html {
+  scroll-behavior: smooth;
+}
+
+/* SECTIONS */
+.section {
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100vh;
+  position: relative;
+}
+
+
+/* VIDEO */
+.video-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* EFFET PARALLAX BACKGROUND */
+
+.desert-parallax {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200vh; /* video-section (100vh) + violet-section (100vh) */
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2; /
+}
+
+.parallax-layer {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
+
+.parallax-layer[data-speed] {
+  bottom: -40vh; /* légère marge pour ne jamais voir le bord de l'image */
+}
+
+.sun-layer {
+  width: 120VW;
+  top: 8vh; /* position de départ, visible en page 1 */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* SECTION VIOLET */
+.violet-section {
+  background-color: transparent;
+  position: relative;
+  height: 100vh;
+}
+
+/* CURSEUR */
+.custom-cursor {
+  position: fixed;
+  width: 170px;
+  height: 170px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+}
+
+.cursor-image,
+.cursor-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.cursor-image {
+  width: 170px;
+  height: 170px;
+  background-image: url("souris.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.custom-cursor.is-section2 .cursor-image {
+  background-image: url("Souris2.png");
+}
+
+.cursor-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff3b3b;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+}
+
+/* État "section 3" : bascule vers le point rouge */
+.custom-cursor.is-dot .cursor-image {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.3);
+}
+
+.custom-cursor.is-dot .cursor-dot {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+
+
+#character-container canvas {
+  position: static !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* =========================
+   LAYOUT CARTES
+========================= */
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(40px, 12vw, 260px);
+    height: 100vh;
+    padding: 0 4vw;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* =========================
+   CARTE 3D FLIP
+========================= */
+
+.card {
+    width: min(400px, 88vw);
+    height: 260px;
+    perspective: 1000px;
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    transform-style: preserve-3d;
+    transition: transform 0.8s;
+    will-change: transform;
+  
+}
+
+
+
+/* FACE */
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px;
+    text-align: center;
+
+    backface-visibility: hidden;
+
+    font-family: "Boldonse", sans-serif;
+    transform-style: preserve-3d;
+}
+
+/* BACK */
+.card-back {
+    transform: rotateY(180deg);
+    font-family: "DIN Alternate", sans-serif;
+}
+
+/* =========================
+   EFFET TEXTE 3D
+========================= */
+
+.card-back {
+    transform-style: preserve-3d;
+}
+
+.pop-title,
+.pop-text {
+    transition: transform 0.4s ease;
+    transform-style: preserve-3d;
+    transform: translateZ(0px);
+    
+}
+
+/* effet sortie au hover */
+.card:hover .pop-title {
+    transform: translateZ(90px);
+
+}
+
+.card:hover .pop-text {
+    transform: translateZ(50px);
+}
+
+.card.is-hovered .card-front,
+.card.is-hovered .card-back {
+  background: rgba(201, 176, 234, 0.55);
+}
+
+.skills-list {
+  list-style-position: outside;
+  padding-left: 20px;   /* espace pour que les puces ne collent pas au bord */
+  text-align: left;
+  width: 100%;
+}
+
+.skills-list li {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+/*PERSONNAGE 3D */
+
+#character-container {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100vh;
+
+  z-index: 70;
+
+  pointer-events: none;
+}
+
+.sound-wave {
+  position: absolute;
+  bottom: 240px;   /* fait dépasser le bas de la carte, ajuste selon le rendu voulu */
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  transition-delay: 0s;
+}
+
+.card:hover .sound-wave {
+  opacity: 1;
+  transition-delay: 0.4s; /* attend que le flip soit bien visible avant d'apparaître */
+}
+
+.sound-wave .bar {
+  width: 5px;
+  background-color: #ebf206;
+  border-radius: 4px;
+}
+
+.sound-wave .bar:nth-child(1) { animation: wave-sm 1.2s ease-in-out infinite; }
+.sound-wave .bar:nth-child(2) { animation: wave-md 1.2s ease-in-out infinite 0.1s; }
+.sound-wave .bar:nth-child(3) { animation: wave-lg 1.2s ease-in-out infinite 0.2s; }
+.sound-wave .bar:nth-child(4) { animation: wave-md 1.2s ease-in-out infinite 0.1s; }
+.sound-wave .bar:nth-child(5) { animation: wave-sm 1.2s ease-in-out infinite; }
+
+@keyframes wave-sm {
+  0%, 100% { height: 10px; }
+  50% { height: 20px; }
+}
+
+@keyframes wave-md {
+  0%, 100% { height: 14px; }
+  50% { height: 30px; }
+}
+
+@keyframes wave-lg {
+  0%, 100% { height: 16px; }
+  50% { height: 40px; }
+}
+
+.about-icon {
+  position: absolute;
+  top: 180px;      /* ajuste selon où tu veux le placer */
+  left: 100%;
+  transform: translateX(-50%);
+
+  width: 180px;
+  height: auto;
+
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  transition-delay: 0s;
+
+  z-index: 10;
+}
+
+.card:hover .about-icon {
+  opacity: 1;
+  transition-delay: 0.4s;
+}
+
+/* CALQUE D'ASSOMBRISSEMENT */
+.dim-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 2; 
+}
+
+.dim-overlay.active {
+  opacity: 1;
+}
+
+/* La carte survolée doit passer au-dessus du calque */
+.card {
+  position: relative;
+  z-index: 5;
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+.card.is-hovered {
+  z-index: 60;
+}
+
+/* Effet lumineux sur la carte active */
+.card-inner {
+  transition: transform 0.8s, box-shadow 0.4s ease;
+}
+
+.card.is-hovered .card-inner {
+  box-shadow:
+    0 0 10px 10px rgba(235, 242, 6, 0.6),
+    0 0 25px 25px rgba(235, 242, 6, 0.4);
+}
+
+
+.card.is-hovered .card-front,
+.card.is-hovered .card-back {
+  border-color: rgba(235, 242, 6, 0.4);
+}
+
+.third-section {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  position: relative;
+  }
+
+  #particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;          /* derrière les cartes et le personnage, devant le fond */
+  pointer-events: none;
+}
+
+#particles-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#lift-canvas-container {
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  width: 900px;
+  height: 400px;
+  pointer-events: none;
+}
+
+#lift-canvas-container canvas {
+  display: block;
+}
+
+.third-section {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  position: relative;
+}
+
+.third-sticky {
+  position: relative;   /* plus besoin de sticky */
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: #874ead;
+}
+
+.single-poster {
+  position: absolute;
+  right: 8%;
+  top: 50%;
+  transform: translateY(-50%);
+
+  border-radius: 8px;
+  overflow: visible;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.single-poster canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.poster-caption {
+  position: absolute;
+  left: 0;
+  bottom: -40px;
+  width: 100%;
+}
+
+.caption-text {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  color: #ebf206;
+  font-family: "Boldonse", sans-serif;
+  font-size: 16px;
+  transition: opacity 0.4s ease;
+  white-space: nowrap;
+}
+
+.lift-text-wrapper,
+.lift-text-wrapper * {
+  pointer-events: none;
+}
+
+.magnetic-zone {
+  position: absolute;
+  left: 10%;
+  top: calc(10% + 340px); /* ajuste selon la hauteur réelle de ton texte */
+  width: 260px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.magnetic-btn {
+  padding: 20px 50px;
+  border: none;
+  border-radius: 999px;
+  font-family: "Boldonse", sans-serif;
+  font-size: 18px;
+  color: #1a0330;
+  cursor: none;
+  background: linear-gradient(135deg, #c9b0ea 0%, #ebf206 100%);
+  background-size: 200% 200%;
+  transition: background-position 0.6s ease;
+}
+
+.magnetic-btn:hover {
+  background-position: 100% 100%;
+}
+
+/* Flèche sous le bouton Galerie */
+.fleche-galerie {
+  position: absolute;
+  left: 20%;
+  top: calc(10% + 240px + 140px + 20px); /* juste sous la magnetic-zone */
+  width: 460px;
+  height: auto;
+  pointer-events: none;
+  z-index: 4;
+}
+
+
+
+.portfolio-banner {
+  position: relative;
+  width: 100vw;
+  height: 70px;
+  background-color: #ebf206;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.banner-track {
+  position: absolute;
+  top: 50%;
+  left: 50%;   /* ← changé, ancré au centre maintenant */
+  white-space: nowrap;
+  font-family: "Boldonse", sans-serif;
+  font-size: 32px;
+  letter-spacing: 4px;
+  will-change: transform;
+}
+
+.track-a {
+  color: #320b5a;
+}
+
+.track-b {
+  color: #ffffff;
+  mix-blend-mode: difference;
+}
+
+
+/* =========================
+   SECTION 4 MOTION DESIGN
+========================= */
+
+.fourth-section {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  position: relative;
+}
+
+.fourth-sticky {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+ background-color: #320b5a;
+}
+
+#motion-canvas-container {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 100%;
+  height: 45vh;   /* garde la même hauteur qu'avant, mais ancrée en haut de .fourth-sticky */
+  z-index: 2;
+}
+
+/* =========================
+   GALERIE VIDÉO EN CUBE - SECTION 4
+========================= */
+
+.video-cube-grid {
+  position: absolute;
+  bottom: 4%;
+  left: 0;
+  right: 0;
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 24px;
+
+  padding: 0 4%;
+  box-sizing: border-box;
+
+  z-index: 2;
+}
+
+.cube-wrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  perspective: 800px;
+  cursor: none;
+}
+
+.cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.cube-wrapper:hover .cube {
+  transform: rotateY(-90deg);
+}
+
+.cube-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.cube-face img,
+.cube-face video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* translateZ doit correspondre à la moitié de la largeur réelle du cube */
+.cube-face-front {
+  transform: translateZ(var(--cube-half, 80px));
+}
+
+.cube-face-right {
+  transform: rotateY(90deg) translateZ(var(--cube-half, 80px));
+}
+
+@media (max-width: 1100px) {
+  .video-cube-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .video-cube-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 0 3%;
+  }
+}
+
+
+/* =========================
+   SECTION 5
+========================= */
+
+.fifth-section {
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100dvh;
+  position: relative;
+}
+
+.fifth-sticky {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: #1a0330;
+}
+
+#fifth-canvas-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+#fifth-canvas-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.fifth-header {
+  position: relative;
+  z-index: 10;
+  color: #c9b0ea;
+  padding: 3rem;
+  font-family: "Boldonse", sans-serif;
+}
+
+.fifth-title-video {
+  position: absolute;
+  top: -5rem;
+  left: 0rem;
+
+  width: 360px;
+  height: auto;
+
+  display: block;
+}
+
+.fifth-title {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.fifth-info {
+  margin-top: 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fifth-line {
+  font-family: "DIN Alternate", sans-serif;
+  font-size: 1.1rem;
+  color: #c9b0ea;
+  margin: 0;
+
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Décalage progressif (stagger) pour chaque ligne */
+.fifth-line:nth-child(1) { transition-delay: 0s; }
+.fifth-line:nth-child(2) { transition-delay: 0.12s; }
+.fifth-line:nth-child(3) { transition-delay: 0.24s; }
+.fifth-line:nth-child(4) { transition-delay: 0.36s; }
+
+/* État déclenché au scroll */
+.fifth-section.is-visible .fifth-line {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fifth-section {
+  position: relative; /* nécessaire pour positionner les boutons dedans */
+}
+
+.social-buttons {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  display: flex;
+  flex-direction: row; /* explicite : côte à côte */
+  align-items: center;
+  gap: 20px;
+  z-index: 20; /* augmenté au cas où d'autres éléments passent devant */
+}
+
+.social-btn {
+  width: 70px;
+  height: 70px;
+  flex-shrink: 0; /* évite qu'ils se compriment */
+  display: block;
+}
+
+.social-btn-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.couluresT-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.couluresB-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+
+.video-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 9999;
+}
+
+.video-lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-lightbox-inner {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85dvh;
+}
+
+.video-lightbox-video {
+  max-width: 90vw;
+  max-height: 85dvh;
+  display: block;
+  border-radius: 8px;
+}
+
+.video-lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: #ebf206;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  transform-origin: center;
+}
+
+@keyframes closeBtnFall {
+  0% {
+    transform: rotate(-100deg) translateY(-24px);
+  }
+  55% {
+    transform: rotate(18deg) translateY(3px);
+  }
+  75% {
+    transform: rotate(-10deg) translateY(0);
+  }
+  100% {
+    transform: rotate(0deg) translateY(0);
+  }
+}
+
+.video-lightbox-close:hover {
+  animation: closeBtnFall 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.video-lightbox.is-open .video-lightbox-close {
+  animation: closeBtnFall 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.video-lightbox-volume {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 10px;
+  border-radius: 20px;
+}
+
+.video-lightbox-volume-icon {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+}
+
+.video-lightbox-volume-icon.is-muted .vol-wave {
+  opacity: 0.25;
+}
+
+.video-lightbox-volume-slider {
+  width: 80px;
+  accent-color: #ebf206;
+}
+
+/* =========================
+   SECTION "LET'S WORK TOGETHER"
+========================= */
+.together-section {
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  scroll-snap-align: start; /* tu l'avais déjà plus bas, je le remonte ici pour regrouper */
+}
+
+.together-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.together-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(50,11,90,0.55) 0%, rgba(26,3,48,0.7) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.together-lines {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: 5vh;
+}
+
+.together-line {
+  font-family: "Boldonse", sans-serif;
+  font-size: clamp(1.2rem, 6.2vw, 5.5rem);
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: 2px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Wrapper pour chaque lettre : contient contour (fixe) + remplissage (clignote) */
+.together-line .letter-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+/* Contour STATIQUE, toujours visible */
+.together-line .letter-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px #ebf206;
+}
+
+/* Remplissage qui clignote, superposé sur le contour */
+.together-line .letter-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #ebf206;
+  opacity: 0;
+}
+
+.together-line .space {
+  display: inline-block;
+  width: 0.28em;
+}
+
+@media (max-width: 900px) {
+  .together-line {
+    white-space: normal;
+  }
+}
+
+/* Scroll snap uniquement entre together-section et fifth-section */
+html {
+  scroll-snap-type: y proximity; /* "proximity" = snap doux, pas forcé comme "mandatory" */
+}
+
+.together-section {
+  scroll-snap-align: start;
+}
+
+.fifth-section {
+  scroll-snap-align: start;
+}
+
+
+/* ===== TABLETTE (≤1024px) ===== */
+@media (max-width: 1024px) {
+  /* Le perso 3D est décoratif et se superpose mal au texte dès que
+     l'écran rétrécit : on le masque pour laisser toute la place aux cartes */
+  #character-container {
+    display: none;
+  }
+
+  .cards-container {
+    flex-direction: column;
+    gap: 28px;
+    height: auto;
+    padding: 80px 5vw;
+  }
+  .card {
+    width: min(380px, 90vw);
+    height: 220px;
+  }
+
+  .about-icon {
+    display: none;
+  }
+
+  /* Les fonds (dunes/soleil) restent pleine hauteur même si ça déborde
+     horizontalement — ça peut être coupé sur les côtés, pas en haut/bas */
+  .parallax-layer[data-speed] {
+    width: auto;
+    height: 100%;
+    max-width: none;
+    bottom: 0;
+  }
+
+  /* La section "My projects" passe en layout empilé dès la tablette
+     pour éviter que le texte 3D, le bouton et l'affiche se chevauchent */
+  .third-sticky {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 5vw 80px;
+    gap: 20px;
+  }
+
+  .lift-text-wrapper {
+    position: static;
+  }
+
+  #lift-canvas-container {
+    position: static;
+    width: min(600px, 90vw);
+    height: 260px;
+    margin: 0 auto;
+  }
+
+  .magnetic-zone {
+    position: static;
+    margin: 10px auto 20px;
+  }
+
+  .single-poster {
+    position: static;
+    right: auto;
+    top: auto;
+    transform: none;
+    margin: 20px auto 0;
+  }
+
+  .poster-caption {
+    position: static;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .caption-text {
+    position: static;
+    display: block;
+  }
+
+  .fifth-title-video {
+    width: 280px;
+  }
+}
+
+/* ===== MOBILE : curseur tactile ===== */
+@media (hover: none), (pointer: coarse) {
+  body { cursor: auto; }
+  .custom-cursor { display: none; }
+  .magnetic-btn,
+  .cube-wrapper,
+  .card,
+  #poster-reveal-container {
+    cursor: pointer;
+  }
+}
+
+/* ===== MOBILE : layout (≤640px) ===== */
+@media (max-width: 640px) {
+  .cards-container {
+    flex-direction: column;
+    gap: 24px;
+    height: auto;
+    padding: 60px 5vw;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 340px;
+    height: 200px;
+  }
+
+  .about-icon {
+    display: none; /* évite le débordement horizontal sur mobile */
+  }
+
+  #lift-canvas-container {
+    width: 100%;
+    height: 220px;
+    margin: 40px 0 20px;
+  }
+
+  .fifth-header {
+    padding: 1.5rem;
+  }
+
+  .fifth-title-video {
+    width: 220px;
+    top: -2rem;
+  }
+
+  .fifth-info {
+    margin-top: 6rem;
+  }
+
+  .social-buttons {
+    bottom: 20px;
+    left: 20px;
+    gap: 12px;
+  }
+
+  .social-btn {
+    width: 50px;
+    height: 50px;
+  }
+
+  .together-line {
+    font-size: clamp(1rem, 8vw, 2.5rem);
+  }
+}
+
+/* ===== TRÈS PETITS ÉCRANS (≤380px) ===== */
+@media (max-width: 380px) {
+  .card {
+    height: 180px;
+    padding: 0;
+  }
+
+  .card-front,
+  .card-back {
+    padding: 18px;
+  }
+
+  .fifth-title-video {
+    width: 180px;
+  }
+
+  .social-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .video-cube-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

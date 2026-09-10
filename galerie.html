@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery — Maud Billard</title>
+
+  <link rel="stylesheet" href="galerie.css" />
+</head>
+<body>
+
+  <!-- CURSEUR PERSONNALISÉ -->
+  <div class="custom-cursor">
+    <div class="cursor-image"></div>
+    <div class="cursor-label">View</div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <header class="gallery-nav">
+    <a href="#" class="nav-back" id="nav-back">
+      <span class="nav-arrow">←</span>
+      <span>Go back</span>
+    </a>
+    <span class="nav-name">Maud Billard</span>
+  </header>
+
+  <!-- INTRO -->
+  <section class="gallery-intro">
+    <h1 class="gallery-title">
+      <span class="gallery-title-line">Graphic</span>
+      <span class="gallery-title-line">Design</span>
+    </h1>
+    <p class="gallery-subtitle">Poster, Logo, Illustration, Advertisement, 2D/3D, Digital painting, social media posts  </p>
+  </section>
+
+  <!-- GALERIE -->
+  <section class="work-gallery" id="work-gallery">
+    <div class="work-columns">
+
+      <div class="work-col work-col-left">
+        <div class="work-track" id="track-left"></div>
+      </div>
+
+      <div class="work-col work-col-right">
+        <div class="work-track" id="track-right"></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="gallery-footer">
+    <p>maud69.billard@gmail.com</p>
+    <a href="#" class="nav-back" id="nav-back-footer">Back to portfolio →</a>
+  </footer>
+
+  <!-- LIGHTBOX PLEIN ÉCRAN -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">✕</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.180.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <script type="module" src="galerie.js"></script>
+
+</body>
+</html>
